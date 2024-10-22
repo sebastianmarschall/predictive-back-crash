@@ -15,9 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -32,13 +31,11 @@ object Routes {
     data object ScreenA
 
     @Serializable
-    data class Root(val id: String) {
+    data class RouteB(val color: Int) {
         @Serializable
         data object ScreenB
     }
 }
-
-class ScreenBViewModel : ViewModel()
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,42 +53,40 @@ class MainActivity : ComponentActivity() {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(Color.Gray),
+                                .background(Color.Yellow),
                             contentAlignment = Alignment.Center
                         ) {
                             Button(onClick = {
-                                navController.navigate(Routes.Root("1"))
+                                navController.navigate(Routes.RouteB(Color.Red.toArgb()))
                             }) {
-                                Text("To Screen B")
+                                Text("To Red")
                             }
                         }
                     }
-                    navigation<Routes.Root>(
-                        startDestination = Routes.Root.ScreenB
+                    navigation<Routes.RouteB>(
+                        startDestination = Routes.RouteB.ScreenB
                     ) {
-                        composable<Routes.Root.ScreenB> { backStackEntry ->
+                        composable<Routes.RouteB.ScreenB> { backStackEntry ->
                             val parentEntry = remember(backStackEntry) {
-                                navController.getBackStackEntry<Routes.Root>()
+                                navController.getBackStackEntry<Routes.RouteB>()
                             }
-                            val vm = viewModel<ScreenBViewModel>(parentEntry)
-                            val route = parentEntry.toRoute<Routes.Root>()
+                            val route = parentEntry.toRoute<Routes.RouteB>()
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .background(Color.Green),
+                                    .background(Color(route.color)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Column {
-                                    Text("ID ${route.id}")
                                     Button(onClick = {
                                         navController.popBackStack()
                                     }) {
-                                        Text("Back to A")
+                                        Text("Back to Red")
                                     }
                                     Button(onClick = {
-                                        navController.navigate(Routes.Root("2"))
+                                        navController.navigate(Routes.RouteB(Color.Green.toArgb()))
                                     }) {
-                                        Text("To Screen B")
+                                        Text("To Green")
                                     }
                                 }
                             }
