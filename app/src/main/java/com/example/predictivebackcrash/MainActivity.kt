@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -36,6 +38,8 @@ object Routes {
         data object ScreenB
     }
 }
+
+class ScreenBViewModel : ViewModel()
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +74,7 @@ class MainActivity : ComponentActivity() {
                             val parentEntry = remember(backStackEntry) {
                                 navController.getBackStackEntry<Routes.RouteB>()
                             }
+                            val vm = viewModel<ScreenBViewModel>(parentEntry)
                             val route = parentEntry.toRoute<Routes.RouteB>()
                             Box(
                                 modifier = Modifier
